@@ -1,0 +1,16 @@
+//my p5js file
+let sound;
+
+function preload() {
+  sound = loadSound('sounds/sound.mp3');
+}
+
+function setup() {
+  createCanvas(400, 200);
+  let button = createButton('Play Sound');
+  button.mousePressed(playSound);
+}
+
+function playSound() {
+  sound.play();
+}
