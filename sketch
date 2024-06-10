@@ -7,16 +7,12 @@ var subcols = [];
 var subcellsinfo = [];
 var mygrid= [];
 let img;
-let sounds=[];
-let currentSoundIndex = 0;
+
 
 
 function preload() {
     img = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.png');  // Preload the image
-  sounds = loadSound ('https://mariatschumi.github.io/project-3/sounds'); //Preload the sounds
-  for (let i = 0; i < 5; i++) {
-        sounds[i]=loadSound('https://mariatschumi.github.io/project-3/sounds/omonoia%20square')
-}  
+  
 }
 
 function setup() {
@@ -49,8 +45,8 @@ function mouseClicked(){
 let cellwidth = width / cols; 
 let cellheight = height / rows;
   
-  getAudioContext().resume(); 
-  
+ 
+
    //Δημιουργώ ξανά ένα nested loop ώστε να φτάσω στο τελικό στάδιο για τα υποκελιά
   for (let i = 0; i < cols; i++) {
     let x = i * cellwidth;
@@ -60,13 +56,7 @@ let cellheight = height / rows;
         fill(0,100);
       stroke(255); 
           rect(x, y, cellwidth, cellheight);
-        let currentSound = sounds[currentSoundIndex];
-                if (currentSound.isPlaying()) {
-                    currentSound.stop();
-                }
-                currentSound.play();
-                
-                return; 
+      
       }
     }
   }
