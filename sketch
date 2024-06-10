@@ -1,17 +1,16 @@
 //my p5js file
-let sound;
+let img;
 
 function preload() {
-  sound = loadSound('sounds/sound.mp3');
+    img = loadImage('photos/map%20athens.png');  // Preload the image
 }
 
 function setup() {
-  createCanvas(400, 200);
-  fill (0);
-  let button = createButton('Play Sound');
-  button.mousePressed(playSound);
+    createCanvas(img.width, img.height);  // Create a canvas with the image's dimensions
 }
 
-function playSound() {
-  sound.play();
+function draw() {
+    background(255);  // Set a white background
+    image(img, 0, 0);  // Draw the image at the top-left corner
 }
+
