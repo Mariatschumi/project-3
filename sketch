@@ -12,9 +12,11 @@ let img;
 
 function preload() {
     img = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.png');  // Preload the image
-  
+  sounds = loadSound ('https://mariatschumi.github.io/project-3/sounds'); //Preload the sounds
+  for (let i = 0; i < 5; i++) {
+        sounds[i]=loadSound('https://mariatschumi.github.io/project-3/sounds/omonoia%20square')
 }
-
+}
 function setup() {
     createCanvas(img.width, img.height);  // Create a canvas with the image's dimensions
   
@@ -56,7 +58,7 @@ let cellheight = height / rows;
         fill(0,100);
       stroke(255); 
           rect(x, y, cellwidth, cellheight);
-      
+      sounds[0].isPlaying();
       }
     }
   }
