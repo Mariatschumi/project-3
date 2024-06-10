@@ -49,6 +49,8 @@ function mouseClicked(){
 let cellwidth = width / cols; 
 let cellheight = height / rows;
   
+  getAudioContext().resume(); 
+  
    //Δημιουργώ ξανά ένα nested loop ώστε να φτάσω στο τελικό στάδιο για τα υποκελιά
   for (let i = 0; i < cols; i++) {
     let x = i * cellwidth;
