@@ -16,7 +16,7 @@ function preload() {
     img = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.png');  // Preload the image
   sounds = loadSound ('https://mariatschumi.github.io/project-3/sounds'); //Preload the sounds
   for (let i = 0; i < 5; i++) {
-        sounds[i]=loadSound('https://mariatschumi.github.io/project-3/sounds/omonoia%20square')
+        sounds[i]=loadSound('https://mariatschumi.github.io/project-3/sounds/omonoia%20square.mp3')
 }
 }
 function setup() {
