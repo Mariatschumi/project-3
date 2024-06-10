@@ -1,67 +1,65 @@
 //my p5js file
-//Ορίζω τις μεταβλητές 
-var cols = 10; //Ορίζω συγκεκριμένο αριθμό columns
-var rows = 5; //Ορίζω συγκεκριμένο αριθμό rows
-var subrows = [];
-var subcols = [];
-var subcellsinfo = [];
-var mygrid= [];
+// Define variables
+let cols = 10;
+let rows = 5;
+let mygrid = [];
 let img;
-let sounds;
-
-
-
+let sounds = [];
 
 function preload() {
-    img = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.png');  // Preload the image
-  sounds = loadSound ('https://mariatschumi.github.io/project-3/sounds'); //Preload the sounds
-  for (let i = 0; i < 5; i++) {
-        sounds[i]=loadSound('https://mariatschumi.github.io/project-3/sounds/omonoia%20square.mp3')
+    // Preload the image
+    img = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.png');
+
+    // Preload the sounds
+    for (let i = 0; i < 5; i++) {
+        sounds[i] = loadSound('https://mariatschumi.github.io/project-3/sounds/omonoia%20square.mp3');
+    }
 }
-}
+
 function setup() {
-    createCanvas(img.width, img.height);  // Create a canvas with the image's dimensions
-  
-    background(255);  // Set a white background
-    image(img, 0, 0);  // Draw the image at the top-left corner
-    creategrid();
+    createCanvas(img.width, img.height);
+    background(255);
+    image(img, 0, 0);
+    createGrid();
 }
 
-
-
-function creategrid() {
+function createGrid() {
+    let cellWidth = width / cols;
+    let cellHeight = height / rows;
     
-let cellwidth = width / cols; 
-let cellheight = height / rows;
-    for (var i = 0; i < cols; i++) {
-        let x = i * cellwidth;
-      
-        for (var j = 0; j < rows; j++) {
-            let y = j * cellheight; 
-           stroke(255);
-          noFill(); 
-          rect(x, y, cellwidth, cellheight);
-     
+    for (let i = 0; i < cols; i++) {
+        let x = i * cellWidth;
+        
+        for (let j = 0; j < rows; j++) {
+            let y = j * cellHeight; 
+            stroke(255);
+            noFill(); 
+            rect(x, y, cellWidth, cellHeight);
+        }
+    }
+}
+
+function mouseClicked() {
+    let cellWidth = width / cols;
+    let cellHeight = height / rows;
+  
+    for (let i = 0; i < cols; i++) {
+        let x = i * cellWidth;
+        
+        for (let j = 0; j < rows; j++) {
+            let y = j * cellHeight; 
+            if (mouseX > x && mouseX < x + cellWidth && mouseY > y && mouseY < y + cellHeight) {
+                fill(0, 100);
+                stroke(255);
+                rect(x, y, cellWidth, cellHeight);
+                
+                // Play a sound
+                let soundIndex = i + j; // Choose a sound based on cell position
+                if (soundIndex < sounds.length) {
+                    let currentSound = sounds[soundIndex];
+                    currentSound.play();
                 }
             }
         }
-function mouseClicked(){
-let cellwidth = width / cols; 
-let cellheight = height / rows;
-  
- 
-
-   //Δημιουργώ ξανά ένα nested loop ώστε να φτάσω στο τελικό στάδιο για τα υποκελιά
-  for (let i = 0; i < cols; i++) {
-    let x = i * cellwidth;
-    for (let j = 0; j < rows; j++) {
-      let y = j * cellheight; 
-      if (mouseX>x && mouseX<x+cellwidth && mouseY>y && mouseY<y+cellwidth){
-        fill(0,100);
-      stroke(255); 
-          rect(x, y, cellwidth, cellheight);
-      sounds[0].isPlaying();
-      }
     }
-  }
 }
