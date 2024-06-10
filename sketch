@@ -7,6 +7,8 @@ var subcols = [];
 var subcellsinfo = [];
 var mygrid= [];
 let img;
+let sounds;
+
 
 
 
