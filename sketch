@@ -8,6 +8,7 @@ var subcellsinfo = [];
 var mygrid= [];
 let img;
 let sounds=[];
+let currentSoundIndex = 0;
 
 
 function preload() {
@@ -57,7 +58,13 @@ let cellheight = height / rows;
         fill(0,100);
       stroke(255); 
           rect(x, y, cellwidth, cellheight);
-        sounds[0].isPlaying();
+        let currentSound = sounds[currentSoundIndex];
+                if (currentSound.isPlaying()) {
+                    currentSound.stop();
+                }
+                currentSound.play();
+                
+                return; 
       }
     }
   }
