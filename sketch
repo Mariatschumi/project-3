@@ -12,7 +12,7 @@ function preload() {
 
     // Preload the sounds
     for (let i = 0; i < 5; i++) {
-        sounds[i] = loadSound('https://github.com/Mariatschumi/project-3/blob/main/sounds/omonoia%20square.mp3');
+        sounds[i] = loadSound('https://mariatschumi.github.io/project-3/sounds/omonoia%20square.mp3');
     }
 }
 
