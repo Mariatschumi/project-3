@@ -2,9 +2,13 @@
 // Define variables
 let cols = 10;
 let rows = 5;
+let subrows = [];
+let subcellHeight;
 let mygrid = [];
 let img;
 let sounds = [];
+let clickCounts=[];
+
 
 function preload() {
     // Preload the image
@@ -20,14 +24,18 @@ function setup() {
     createCanvas(img.width, img.height);
     background(255);
     image(img, 0, 0);
-    createGrid();
+  
+    
+    // Initialize clickCounts array
     for (let i = 0; i < cols; i++) {
         clickCounts[i] = [];
         for (let j = 0; j < rows; j++) {
             clickCounts[i][j] = 0;
         }
     }
+  createGrid();
 }
+
 
 function createGrid() {
     let cellWidth = width / cols;
@@ -35,40 +43,60 @@ function createGrid() {
     
     for (let i = 0; i < cols; i++) {
         let x = i * cellWidth;
+       subrows[i] = [];
         
         for (let j = 0; j < rows; j++) {
-            let y = j * cellHeight; 
+          subrows[i][j] = 5;
+            let y = j * cellHeight;
             stroke(255);
-            noFill(); 
+          strokeWeight(2);
+            noFill();
             rect(x, y, cellWidth, cellHeight);
+           for (var k = 1;k < subrows[i][j]; k++) {
+        let subcellHeight = cellHeight/subrows[i][j];
+             stroke(255);
+             strokeWeight(1);
+           line(x,y+ k * subcellHeight,x+cellWidth,y+ k*subcellHeight);
         }
-    }
+                }
 }
+    }
 
 function mouseClicked() {
     let cellWidth = width / cols;
     let cellHeight = height / rows;
-  
-    for (let i = 0; i < cols; i++) {
-        let x = i * cellWidth;
+
+    let i = Math.floor(mouseX / cellWidth);
+    let j = Math.floor(mouseY / cellHeight);
+
+    if (i >= 0 && i < cols && j >= 0 && j < rows) {
+        // Increment the click count for the clicked cell
+        clickCounts[i][j]++;
         
-        for (let j = 0; j < rows; j++) {
-            let y = j * cellHeight; 
-            if (clickCounts[i][j]== isOdd) {
-                fill(0, 100);
-                stroke(255);
-                rect(x, y, cellWidth, cellHeight);
-                
-                // Play a sound
-                let soundIndex = i + j*cols; // Choose a sound based on cell position
-                if (soundIndex < sounds.length) {
-                    let currentSound = sounds[soundIndex];
-                    currentSound.play();}
-                    else if (clickCounts[i][j]==isEven){
-                      currentSound.stop();
-                    } 
-                  }
-                }
+        // Calculate the sound index and wrap it if necessary
+        let soundIndex = (i + j * cols) % sounds.length;
+        let currentSound = sounds[soundIndex];
+        
+        if (clickCounts[i][j] == 1) {
+            // First click: Highlight the cell and play sound
+            fill(0, 100);
+            stroke(255);
+            rect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
+            if (!currentSound.isPlaying()) {
+                currentSound.play();
+              
             }
+        } else if (clickCounts[i][j] == 2) {
+            // Second click: Remove highlight and stop sound
+            noFill();
+            stroke(255);
+            rect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
+            if (currentSound.isPlaying()) {
+                currentSound.stop();
+            }
+            // Reset click count for this cell
+            clickCounts[i][j] = 0; 
         }
-   
+    
+        }
+}
