@@ -12,7 +12,7 @@ function preload() {
 
     // Preload the sounds
     for (let i = 0; i < 5; i++) {
-        sounds[i] = loadSound('https://mariatschumi.github.io/project-3/sounds/omonoia%20square.mp3');
+        sounds[i] = loadSound('https://mariatschumi.github.io/project-3/sounds/sound22.mp3');
     }
 }
 
@@ -21,6 +21,12 @@ function setup() {
     background(255);
     image(img, 0, 0);
     createGrid();
+    for (let i = 0; i < cols; i++) {
+        clickCounts[i] = [];
+        for (let j = 0; j < rows; j++) {
+            clickCounts[i][j] = 0;
+        }
+    }
 }
 
 function createGrid() {
@@ -48,18 +54,21 @@ function mouseClicked() {
         
         for (let j = 0; j < rows; j++) {
             let y = j * cellHeight; 
-            if (mouseX > x && mouseX < x + cellWidth && mouseY > y && mouseY < y + cellHeight) {
+            if (clickCounts[i][j]== isOdd) {
                 fill(0, 100);
                 stroke(255);
                 rect(x, y, cellWidth, cellHeight);
                 
                 // Play a sound
-                let soundIndex = i + j; // Choose a sound based on cell position
+                let soundIndex = i + j*cols; // Choose a sound based on cell position
                 if (soundIndex < sounds.length) {
                     let currentSound = sounds[soundIndex];
-                    currentSound.play();
+                    currentSound.play();}
+                    else if (clickCounts[i][j]==isEven){
+                      currentSound.stop();
+                    } 
+                  }
                 }
             }
         }
-    }
-}
+   
