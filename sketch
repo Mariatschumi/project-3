@@ -5,36 +5,59 @@ let rows = 5;
 let subrows = [];
 let subcellHeight;
 let mygrid = [];
+
 let img;
-let sounds = [];
+
 let clickCounts=[];
+
+let sounds = [];
+let sound22;
+let sound;
+let audiofile;
 
 
 function preload() {
     // Preload the image
     img = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.png');
+  sound22 = loadSound('https://mariatschumi.github.io/project-3/sounds/sound22.mp3');
 
-    // Preload the sounds
-    for (let i = 0; i < 5; i++) {
-        sounds[i] = loadSound('https://mariatschumi.github.io/project-3/sounds/sound22.mp3');
-    }
+   for (let i = 0; i < cols; i++) {
+        sounds[i] = [];
+        for (let j = 0; j < rows; j++) {
+            let soundFilePath = `https://mariatschumi.github.io/project-3/sounds/sound${i}${j}.mp3`;
+            sounds[i][j] = loadSound(soundFilePath);
+                if (soundFilePath==true){
+                  console.log(`Loaded sound for cell (${i},${j})`); } else {console.log(`Failed to load sound for cell (${i},${j})`) ; }
+                
+                                     }
+                                     }
 }
+
 
 function setup() {
     createCanvas(img.width, img.height);
     background(255);
     image(img, 0, 0);
   
-    
     // Initialize clickCounts array
     for (let i = 0; i < cols; i++) {
         clickCounts[i] = [];
+      mygrid[i]=[];
+      let x = i*(width/cols);
         for (let j = 0; j < rows; j++) {
-            clickCounts[i][j] = 0;
+          let y = j*(height/rows);
+           clickCounts[i][j] = 0;
+          let sound = sounds[i][j];
+          let audiofile = {
+            x,
+            y,
+            sound};
+          mygrid[i][j]=audiofile;
+          }
         }
+   createGrid();
     }
-  createGrid();
-}
+ 
 
 
 function createGrid() {
@@ -73,17 +96,15 @@ function mouseClicked() {
         // Increment the click count for the clicked cell
         clickCounts[i][j]++;
         
-        // Calculate the sound index and wrap it if necessary
-        let soundIndex = (i + j * cols) % sounds.length;
-        let currentSound = sounds[soundIndex];
+let audiofile = mygrid[i][j].sound;
         
         if (clickCounts[i][j] == 1) {
             // First click: Highlight the cell and play sound
             fill(0, 100);
             stroke(255);
             rect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
-            if (!currentSound.isPlaying()) {
-                currentSound.play();
+            if (audiofile && audiofile.isLoaded() && !audiofile.isPlaying()) {
+                audiofile.play();
               
             }
         } else if (clickCounts[i][j] == 2) {
@@ -91,8 +112,8 @@ function mouseClicked() {
             noFill();
             stroke(255);
             rect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
-            if (currentSound.isPlaying()) {
-                currentSound.stop();
+            if (audiofile && audiofile.isLoaded() && audiofile.isPlaying()) {
+                audiofile.stop();
             }
             // Reset click count for this cell
             clickCounts[i][j] = 0; 
