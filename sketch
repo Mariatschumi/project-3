@@ -25,8 +25,8 @@ function preload() {
         sounds[i] = [];
         for (let j = 0; j < rows; j++) {
             let soundFilePath = `https://mariatschumi.github.io/project-3/sounds/sound${i}${j}.mp3`;
-            sounds[i][j] = loadSound(soundFilePath);
-                if (soundFilePath==true){
+            sounds[i][j] = soundFilePath;
+                if (soundFilePath===true){
                   console.log(`Loaded sound for cell (${i},${j})`); } else {console.log(`Failed to load sound for cell (${i},${j})`) ; }
                 
                                      }
