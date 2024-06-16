@@ -1,4 +1,4 @@
-// Ορίζουμε τις μεταβλητές
+//Ορίζουμε τις μεταβλητές
 //Μεταβλητές για τον κάνναβο
 let cols = 25;
 let rows = 15;
@@ -26,12 +26,11 @@ var waves = [];
 function preload() {
     img = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.jpg');
     sound22 = loadSound('https://mariatschumi.github.io/project-3/sounds/sound22.mp3');
-  if(togglerecording && typeof i !== 'undefined' && typeof j !== 'undefined') {
-   
+  if(toggleRecording && typeof i !== 'undefined' && typeof j !== 'undefined') {
     eventsound = loadSound(`https://mariatschumi.github.io/project-3/sounds/myRecording${i}${j}.wav`);
-  }
 }
 
+}
 
 //Φτιάχνουμε τον αρχικό κάναβο
 function createGrid() {
@@ -59,36 +58,13 @@ function createGrid() {
   for (let i = 1; i < cols; i++) {
     let x = i * cellWidth;
     text(i,x+cellWidth/2,25);}
-  for (let j = 1; j < rows; j++) {
+  for (let j = 1; j < rows+1; j++) {
             let y = j * cellHeight;
           text(j,25,y+cellHeight/2);}
 }
 
 
-function soundcell(){
-  //Δημιουργούμε 2Darrays για να ορίσουμε κάθε κέλί με άλλες ιδιότητες
-    for (let i = 1; i < cols; i++) {
-        clickCounts[i] = []; 
-        mygrid[i] = []; 
-        sounds[i] = [];
-        for (let j = 1; j < rows; j++) {
-            clickCounts[i][j] = 0; //μετράει πόσα κλικ κάνουμε σε κάθε κελί
 
-            if (i === 2 && j === 9) {
-                sounds[i][j] = sound22; // Βάζουμε στο κελί2,9 τον ήχο sound29 γιατί αυτόν έχουμε μέχδρι στιγμής
-            } 
-          if (soundrecord){
-              sounds[i][j] = eventsound;
-            }
-          else {
-                sounds[i][j] = null; // Οπότε οι υπόλοιποι ήχοι των κελιών είναι κενοί
-            }
-            let cellWidth = width/ cols;
-            let cellHeight = height / rows;
-            mygrid[i][j] = {positionx: i * cellWidth, positiony: j * cellHeight, sound: sounds[i][j]}; // Ορίζουμε το 2Darray των κελιών ως αντικείμενο με ιδιότητες x,y και ήχου
-        }
-    }
-}
 
 function setup() {
     createCanvas(img.width+width/cols, img.height+200); //Ορίζουμε την εικόνα ως καμβά
@@ -112,30 +88,7 @@ function setup() {
   button.mousePressed(toggleRecording);
 }
 
-/*function toggleRecording() {
-  if (!isRecording) {
-    // Αρχίζει να ηχογραφεί
-    recorder.record(soundrecord);
-    isRecording = true;
-    button.html('Stop Recording');
-    
-    // Σταματά να ηχογραφεί μετά από 30 δεύτερα
-    setTimeout(() => {
-      if (isRecording) {
-        recorder.stop();
-        isRecording = false;
-        button.html('Start Recording');
-        
-        //Κάνε κλικ στο κελί σου
-        fill('cornflowerblue');
-        textSize(25);
-        text('click on the cell you are',width/2,img.height+100);
-        
-        
-      }
-    }, recordingDuration);
-  } 
-}*/
+
 function toggleRecording() {
     if (!isRecording) {
         // Start recording
@@ -170,7 +123,30 @@ function draw() {
   
 }
 
+function soundcell(){
+  //Δημιουργούμε 2Darrays για να ορίσουμε κάθε κέλί με άλλες ιδιότητες
+    for (let i = 1; i < cols; i++) {
+        clickCounts[i] = []; 
+        mygrid[i] = []; 
+        sounds[i] = [];
+        for (let j = 1; j < rows; j++) {
+            clickCounts[i][j] = 0; //μετράει πόσα κλικ κάνουμε σε κάθε κελί
 
+            if (i === 2 && j === 9) {
+                sounds[i][j] = sound22; // Βάζουμε στο κελί2,9 τον ήχο sound29 γιατί αυτόν έχουμε μέχρι στιγμής
+            } 
+          if (soundrecord){
+              sounds[i][j] = eventsound;
+            }
+          else {
+                sounds[i][j] = null; // Οπότε οι υπόλοιποι ήχοι των κελιών είναι κενοί
+            }
+            let cellWidth = width/ cols;
+            let cellHeight = height / rows;
+            mygrid[i][j] = {positionx: i * cellWidth, positiony: j * cellHeight, sound: sounds[i][j]}; // Ορίζουμε το 2Darray των κελιών ως αντικείμενο με ιδιότητες x,y και ήχου
+        }
+    }
+}
 
 //Σε αυτό το function ρυθμίζουμε αν γίνει κλικ μέσα σε ένα κελί να παίζει τον ήχο. Μέχρι στιγμής παίζει μόνο στο κελί 2,2. Επίσης μετράει τα κλικ που γίνονται, ώστε στο πρώτο κλικ να παίζει ο ήχος και στο δεύτερο να σταματάει.
 function mouseClicked() {
@@ -199,7 +175,7 @@ function mouseClicked() {
           
            //Στο πρώτο κλικ παίζει ο ήχος
              
-    sounds[i][j]= eventsound;
+    
             if (sounds[i][j] && !sounds[i][j].isPlaying()) {
                 sounds[i][j].play();
             }
@@ -219,7 +195,7 @@ function mouseClicked() {
 
 function drawWaves() {
    
-  let vol = amplitude.getLevel()*1000;//Για να κάνουμε τα κύμτα βρίσκουμε το εύρος από τον ήχο και το ορίζουμε ως vol. Το πολλαπλασιάζουμε γιατί ήταν πολύ μικρό. 
+  let vol = amplitude.getLevel();//Για να κάνουμε τα κύμτα βρίσκουμε το εύρος από τον ήχο και το ορίζουμε ως vol. Το πολλαπλασιάζουμε γιατί ήταν πολύ μικρό. 
   
   let cellWidth = width / cols;
   let cellHeight = height / rows;
@@ -249,7 +225,7 @@ function drawWaves() {
   
 
         // Το κύμα αυξάνεται μέχρι η ακτίνα του να είναι ίδια με το πλάτος του κελιού, αν εξαρχής το εύρος του ήχου είναι μικρότερο από το πλάτος του κελιού.
-        if (wave.radius < vol && vol<cellWidth) {
+        if (wave.radius < vol ) {
             wave.radius += wave.speed; } else { wave.radius = 0;}
     }   
 }
