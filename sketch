@@ -26,15 +26,12 @@ var waves = [];
 function preload() {
     img = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.jpg');
     sound22 = loadSound('https://mariatschumi.github.io/project-3/sounds/sound22.mp3');
-  if(tooglerecording == true) {
-    for (let i = 0; i < cols; i++) {
-        for (let j = 0; j < rows; j++) {
+  if(tooglerecording && typeof i !== 'undefined' && typeof j !== 'undefined') {
+   
     eventsound = loadSound(`https://mariatschumi.github.io/project-3/sounds/myRecording${i}${j}.wav`);
   }
 }
-}
 
-}
 
 //Φτιάχνουμε τον αρχικό κάναβο
 function createGrid() {
