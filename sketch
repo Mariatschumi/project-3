@@ -142,8 +142,8 @@ function soundcell(){
           else {
                 sounds[i][j] = null; // Οπότε οι υπόλοιποι ήχοι των κελιών είναι κενοί
             }
-            let cellWidth = width/ cols;
-            let cellHeight = height / rows;
+            let cellWidth = img.width/ cols;
+            let cellHeight = img.height / rows;
             mygrid[i][j] = {positionx: i * cellWidth, positiony: j * cellHeight, sound: sounds[i][j]}; // Ορίζουμε το 2Darray των κελιών ως αντικείμενο με ιδιότητες x,y και ήχου
         }
     }
@@ -196,9 +196,9 @@ function mouseClicked() {
 
 function drawWaves() {
    
-  let vol = amplitude.getLevel()*500;//Για να κάνουμε τα κύμτα βρίσκουμε το εύρος από τον ήχο και το ορίζουμε ως vol. Το πολλαπλασιάζουμε γιατί ήταν πολύ μικρό. 
+  let vol = amplitude.getLevel()*1000;//Για να κάνουμε τα κύμτα βρίσκουμε το εύρος από τον ήχο και το ορίζουμε ως vol. Το πολλαπλασιάζουμε γιατί ήταν πολύ μικρό. 
   
-  let cellWidth = width / cols;
+  let cellWidth = img.width / cols;
     let cellHeight = img.height / rows;
 
 //Αν παίζει ο ήχος γίνονται τα κύματα. Οπότε ορίζονται, αν παίζει ο ήχος σε κάθε κελί, ως objects
