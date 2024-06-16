@@ -225,8 +225,9 @@ function drawWaves() {
 
         if (wave.radius < wave.maxRadius) {
             wave.radius += wave.speed;
-        } else {
-            wave.radius = 0;
+        } else else {
+            waves.splice(m, 1); // Remove the wave after it reaches maxRadius
+            m--;
         }
     }
 }
