@@ -188,15 +188,16 @@ function mouseClicked() {
             rect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);}
   if (clickCounts[i][j] == 1) {
     
-    let filename = `sounds/myRecording_${String(i)}_${String(j)}.wav`;
-          saveSound(soundrecord, filename);
-    eventsound = loadSound(`https://mariatschumi.github.io/project-3/sounds/myRecording_${i}_${j}.wav`);
-    sounds[i][j]= eventsound;
+    
+          saveSound(soundrecord, myRecording_${String(i)}_${String(j)}.wav);
+   
             }
   
         if (clickCounts[i][j] == 2) {
           
            //Στο πρώτο κλικ παίζει ο ήχος
+             eventsound = loadSound(`https://mariatschumi.github.io/project-3/sounds/myRecording_${i}_${j}.wav`);
+    sounds[i][j]= eventsound;
             if (sounds[i][j] && !sounds[i][j].isPlaying()) {
                 sounds[i][j].play();
             }
