@@ -29,7 +29,7 @@ function preload() {
   if(toggleRecording) {
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
-    eventsound = loadSound(`https://mariatschumi.github.io/project-3/sounds/myRecording_${i}_${j}.wav`);
+    eventsound = loadSound(`https://mariatschumi.github.io/project-3/sounds/myRecording${i}${j}.wav`);
   }
 }
 }
@@ -194,7 +194,7 @@ function mouseClicked() {
             rect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);}
   if (clickCounts[i][j] == 1) {
     
-          saveSound(soundrecord, myRecording_${String(i)}_${String(j)}.wav);
+          saveSound(soundrecord, `myRecording${i}${j}.wav`);
    
             }
   
