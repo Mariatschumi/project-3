@@ -26,7 +26,7 @@ var waves = [];
 function preload() {
     img = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.jpg');
     sound22 = loadSound('https://mariatschumi.github.io/project-3/sounds/sound22.mp3');
-  if(toggleRecording) {
+  if(tooglerecording == true) {
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
     eventsound = loadSound(`https://mariatschumi.github.io/project-3/sounds/myRecording${i}${j}.wav`);
@@ -194,7 +194,7 @@ function mouseClicked() {
             rect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);}
   if (clickCounts[i][j] == 1) {
     
-          saveSound(soundrecord, `myRecording${i}${j}.wav`);
+          saveSound(soundrecord, `sounds/myRecording${i}${j}.wav`);
    
             }
   
