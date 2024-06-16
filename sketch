@@ -205,7 +205,7 @@ function drawWaves() {
             if (sounds[i][j] && sounds[i][j].isPlaying()) {
                 let vol = amplitude.getLevel(sounds[i][j])* 10000; // Adjust the multiplier as needed
                 console.log("Amplitude level:", vol);
-if (clickCounts[i][j]==2){
+if (clickCounts[i][j]==2 && sounds[i][j] && !soundrecord){
                 waves.push({
                     x: mygrid[i][j].positionx + cellWidth / 2,
                     y: mygrid[i][j].positiony + cellHeight / 2,
