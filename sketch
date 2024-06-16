@@ -26,9 +26,8 @@ var waves = [];
 function preload() {
     img = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.jpg');
     sound22 = loadSound('https://mariatschumi.github.io/project-3/sounds/sound22.mp3');
-  if(soundrecord && typeof i !== 'undefined' && typeof j !== 'undefined') {
-    eventsound = loadSound(`https://mariatschumi.github.io/project-3/sounds/myRecording${i}${j}.wav`);
-}
+    eventsound = loadSound(`https://mariatschumi.github.io/project-3/sounds/myRecording46.wav`);
+
 
 }
 
@@ -169,6 +168,7 @@ function mouseClicked() {
   if (clickCounts[i][j] == 1) {
     
           saveSound(soundrecord, `myRecording${i}${j}.wav`);
+
    
             }
   
@@ -211,8 +211,8 @@ function drawWaves() {
                 x: mygrid[i][j].positionx + cellWidth / 2,
                 y: mygrid[i][j].positiony + cellHeight / 2,
                 radius: 0,
-                maxRadius: cellWidth,
-                speed: 2
+                maxRadius: vol,
+                speed: 50
             });}
   }
 }
@@ -225,7 +225,7 @@ function drawWaves() {
     
 
         // Το κύμα αυξάνεται μέχρι η ακτίνα του να είναι ίδια με το πλάτος του κελιού, αν εξαρχής το εύρος του ήχου είναι μικρότερο από το πλάτος του κελιού.
-        if (wave.radius < vol ) {
+        if (wave.radius < wave.maxRadius ) {
             wave.radius += wave.speed; } else { wave.radius = 0;}
     }   
 }
