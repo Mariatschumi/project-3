@@ -205,7 +205,7 @@ function drawWaves() {
             if (sounds[i][j] && sounds[i][j].isPlaying()) {
                 let vol = amplitude.getLevel(sounds[i][j])* 10000; // Adjust the multiplier as needed
                 console.log("Amplitude level:", vol);
-
+if (clickCounts[i][j]==2){
                 waves.push({
                     x: mygrid[i][j].positionx + cellWidth / 2,
                     y: mygrid[i][j].positiony + cellHeight / 2,
@@ -215,7 +215,8 @@ function drawWaves() {
                 });
             }
         }
-    }
+     }
+ }
 
     for (let m = 0; m < waves.length; m++) {
         let wave = waves[m];
@@ -225,9 +226,8 @@ function drawWaves() {
 
         if (wave.radius < wave.maxRadius) {
             wave.radius += wave.speed;
-        } else else {
-            waves.splice(m, 1); // Remove the wave after it reaches maxRadius
-            m--;
+        } else {
+            wave.radius = 0;
         }
     }
 }
