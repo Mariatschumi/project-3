@@ -72,7 +72,7 @@ function setup() {
  
    
   
-    amplitude = new p5.Amplitude(); //Ορίζουμε ως νέα μεταβλητή το εύρος του κύματος
+    
   recorder = new p5.SoundRecorder();
   soundrecord= new p5.SoundFile();
   
@@ -196,6 +196,7 @@ function mouseClicked() {
 
 
 function drawWaves() {
+    amplitude = new p5.Amplitude(); //Ορίζουμε ως νέα μεταβλητή το εύρος του κύματος
     let cellWidth = img.width / cols;
     let cellHeight = img.height / rows;
 
@@ -209,7 +210,7 @@ function drawWaves() {
                     x: mygrid[i][j].positionx + cellWidth / 2,
                     y: mygrid[i][j].positiony + cellHeight / 2,
                     radius: vol,
-                    maxRadius: vol * 1000,
+                    maxRadius: cellWidth,
                     speed: 20
                 });
             }
