@@ -135,7 +135,7 @@ function soundcell(){
             if (i === 2 && j === 9) {
                 sounds[i][j] = sound22; // Βάζουμε στο κελί2,9 τον ήχο sound29 γιατί αυτόν έχουμε μέχρι στιγμής
             } 
-          if (soundrecord){
+          else if (soundrecord){
               sounds[i][j] = eventsound;
             }
           else {
@@ -171,12 +171,12 @@ function mouseClicked() {
    
             }
   
-        if (clickCounts[i][j] == 2) {
+        if (clickCounts[i][j] == 2 ) {
           
            //Στο πρώτο κλικ παίζει ο ήχος
              
     
-            if (sounds[i][j] && !sounds[i][j].isPlaying()) {
+            if (sounds[i][j]!==null && !sounds[i][j].isPlaying()) {
                 sounds[i][j].play();
             }
           
