@@ -203,13 +203,13 @@ function drawWaves() {
     for (let i = 1; i < cols; i++) {
         for (let j = 1; j < rows; j++) {
             if (sounds[i][j] && sounds[i][j].isPlaying()) {
-                let vol = amplitude.getLevel() * 10000; // Adjust the multiplier as needed
+                let vol = amplitude.getLevel(sounds[i][j]); * 10000; // Adjust the multiplier as needed
                 console.log("Amplitude level:", vol);
 
                 waves.push({
                     x: mygrid[i][j].positionx + cellWidth / 2,
                     y: mygrid[i][j].positiony + cellHeight / 2,
-                    radius: vol,
+                    radius: 0,
                     maxRadius: cellWidth,
                     speed: 20
                 });
