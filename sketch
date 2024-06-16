@@ -53,7 +53,7 @@ function createGrid() {
     }
   textAlign(CENTER,CENTER);
   textSize(15);
-  fill(255);
+  fill('cornflowerblue');
   noStroke();
   
   for (let i = 1; i < cols; i++) {
@@ -191,7 +191,7 @@ function mouseClicked() {
             rect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);}
   if (clickCounts[i][j] == 1) {
     
-          saveSound(soundrecord, `sounds/myRecording${i}${j}.wav`);
+          saveSound(soundrecord, `C:/Users/99lem/OneDrive/Υπολογιστής/ΣΧΟΛΗ 2024/ΠΛΗΡΟΦΟΡΙΚΗ/Assigment%2003/project/sounds/myRecording${i}${j}.wav`);
    
             }
   
