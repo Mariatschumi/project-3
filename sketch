@@ -18,7 +18,7 @@ var waves = [];
 
 //Ανεβάζουμε την εικόνα και τον ήχο
 function preload() {
-    img = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.png');
+    img = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.jpg');
     sound22 = loadSound('https://mariatschumi.github.io/project-3/sounds/sound22.mp3');
 }
 
