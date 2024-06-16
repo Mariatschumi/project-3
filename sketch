@@ -26,7 +26,7 @@ var waves = [];
 function preload() {
     img = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.jpg');
     sound22 = loadSound('https://mariatschumi.github.io/project-3/sounds/sound22.mp3');
-  if(toggleRecording && typeof i !== 'undefined' && typeof j !== 'undefined') {
+  if(soundrecord && typeof i !== 'undefined' && typeof j !== 'undefined') {
     eventsound = loadSound(`https://mariatschumi.github.io/project-3/sounds/myRecording${i}${j}.wav`);
 }
 
@@ -88,6 +88,11 @@ function setup() {
   button.mousePressed(toggleRecording);
 }
 
+function draw() {
+  
+     drawWaves();
+  
+}
 
 function toggleRecording() {
     if (!isRecording) {
@@ -117,11 +122,7 @@ function toggleRecording() {
 
 
 
-function draw() {
-  
-     drawWaves();
-  
-}
+
 
 function soundcell(){
   //Δημιουργούμε 2Darrays για να ορίσουμε κάθε κέλί με άλλες ιδιότητες
@@ -195,10 +196,10 @@ function mouseClicked() {
 
 function drawWaves() {
    
-  let vol = amplitude.getLevel();//Για να κάνουμε τα κύμτα βρίσκουμε το εύρος από τον ήχο και το ορίζουμε ως vol. Το πολλαπλασιάζουμε γιατί ήταν πολύ μικρό. 
+  let vol = amplitude.getLevel()*500;//Για να κάνουμε τα κύμτα βρίσκουμε το εύρος από τον ήχο και το ορίζουμε ως vol. Το πολλαπλασιάζουμε γιατί ήταν πολύ μικρό. 
   
   let cellWidth = width / cols;
-  let cellHeight = height / rows;
+    let cellHeight = img.height / rows;
 
 //Αν παίζει ο ήχος γίνονται τα κύματα. Οπότε ορίζονται, αν παίζει ο ήχος σε κάθε κελί, ως objects
   for (let i = 1; i < cols; i++){
@@ -222,7 +223,6 @@ function drawWaves() {
         stroke(200,50,random(255));
         ellipse(wave.x, wave.y, wave.radius ); 
     
-  
 
         // Το κύμα αυξάνεται μέχρι η ακτίνα του να είναι ίδια με το πλάτος του κελιού, αν εξαρχής το εύρος του ήχου είναι μικρότερο από το πλάτος του κελιού.
         if (wave.radius < vol ) {
