@@ -68,7 +68,7 @@ function createGrid() {
 
 
 function setup() {
-    background(0);
+  
     createCanvas(imgmap.width+width/cols, imgmap.height+200); 
     image(imgmap, width/cols, imgmap.height/rows);
  
