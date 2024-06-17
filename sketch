@@ -1,4 +1,7 @@
+/*Δημιουργούμε πρώτα έναν διαδραστικό χάρτη, ο οποίος συλλέγει δεδομένα από το χρήστη και τα αποθηκεύει, προκειμένου να δημιουργηθεί μια βάση δεδομένων στο Github και να μπορούμε να έχουμε πρόσβαση σε αυτά μετά.Ο χρήστης προσκαλείται να ηχογραφήσει μια μουσική τη στιγμή που συμβαίνει στην πόλη ή να ανεβάσει μια φωτογραφία από τη μουσική. Πρώτα πατάει τα αντίστοιχα κουμπιά και μετά διαλέγει ένα κελί για να καταγραφεί γεωγαφικά το γεγονός. */
+
 //Ορίζουμε τις μεταβλητές
+
 //Μεταβλητές για τον κάνναβο
 let cols = 25;
 let rows = 15;
@@ -11,11 +14,9 @@ let clickCounts = [];
 //Μεταβλητές για ήχο
 let sounds = [];
 let vol;
-let sound22;
-let amplitude;
-var soundrecord;
-var recorder;
-var  button;
+let soundrecord;
+let recorder;
+let  button;
 let isRecording = false;
 let eventsound;
 
@@ -31,12 +32,12 @@ let soundImage;
 
 
 
-//Ανεβάζουμε την εικόνα και τον ήχο
+//Ανεβάζουμε αρχικά την εικόνα του χάρτη
 function preload() {
     imgmap = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.jpg');
 }
 
-//Φτιάχνουμε τον αρχικό κάναβο
+//Φτιάχνουμε τον αρχικό κάναβο μέσα από τον ορισμό των κελιών που δημιουργούνται από τα cols=στήλες και rows=γραμμές.
 function createGrid() {
     let cellWidth = imgmap.width / cols;
     let cellHeight = imgmap.height / rows;
@@ -53,11 +54,14 @@ function createGrid() {
             rect(x+cellWidth, y+cellHeight, cellWidth, cellHeight);
         }
     }
+  
+  //Για να ξέρει ο χρήστης τις συντεταγμένες που θα ανεβάσει τη φωτογραφία ή τον ήχο, αναγράφονται τα i,j πάνω και αριστερά
   textAlign(CENTER,CENTER);
   textSize(15);
   fill('cornflowerblue');
   noStroke();
   
+  //Το i=0 και j=0 δεν αποτελούν μέρος του κανάβου
   for (let i = 1; i < cols; i++) {
     let x = i * cellWidth;
     text(i,x+cellWidth/2,25);}
@@ -66,7 +70,7 @@ function createGrid() {
           text(j,25,y+cellHeight/2);}
 }
 
-
+//Ορίζουμε τον καμβά μεγαλύτερο από την εικόνα και τοποθετούμε την εικόνα. Κάνουμε εκκίνηση στις μεταβλητές που θα χρειαστούν στη συνέχεια.
 function setup() {
   
     createCanvas(imgmap.width+width/cols, imgmap.height+200); 
@@ -75,13 +79,14 @@ function setup() {
   recorder = new p5.SoundRecorder();
   soundrecord= new p5.SoundFile();
   
-  // Αφήνω να χρησιμοποιήσει το μικρόφωνο του χρήστη
+  // Αφήνουμε να χρησιμοποιήσει το μικρόφωνο του χρήστη
   let mic = new p5.AudioIn();
   mic.start();
   recorder.setInput(mic);
   createGrid();
-  soundcell();
+  soundphotocell();
   
+  //Κατασκευάζουμε τα κουμπιά στο κάτω μέρος του καμβά
   button = createButton('RECORD YOUR EVENT');
   button.position(width/cols,imgmap.height+100);
   button.mousePressed(toggleRecording);
@@ -90,28 +95,34 @@ function setup() {
     uploadButton.position(width/cols, imgmap.height + 150);
     uploadButton.mousePressed(openFileDialog);
 
+  //Απαραίτητο για να κάνει ο χρήστης upload τη φωτογραφία, του εμφανίζεται ο φάκελος.
     input = createFileInput(handleFile);
     input.position(width/cols, imgmap.height + 130);
-    input.hide(); // Hide it initially
+    input.hide(); 
 
 }
 
-// Function to handle file upload dialog
+// Απαραίτητο για τη διαχείριση της φωτογραφίας. Για αυτό χρησιμοποιήθηκε βοήθεια από chat.gpt
 function openFileDialog() {
     input.show();
-    input.elt.click(); // Trigger file input click
-    input.hide(); // Hide it again after clicking
+    input.elt.click(); // όταν πατηθεί η φωτογραφία, κλείνει το αρχείο
+    input.hide(); 
 }
 
-// Function to handle uploaded file
+// Απαραίτητο για τη διαχείριση της φωτογραφίας. Ενημέρωση του χρήστη για το Upload, και πρόσκληση να κάνει κλικ σε ένα κελί. 
 function handleFile(file) {
+  //Για αυτό χρησιμοποιήθηκε βοήθεια από chat.gpt
     if (file.type === 'image') {
         uploadedImage = loadImage(file.data, () => {
-            imgUploadFinished = true;
-             fill(0);
+        imgUploadFinished = true;
+          
+      
+    //Όταν ανεβαίνει η φωτογραφία ενημερώνει το χρήστη. Δημιουργείται ένα μαύρο κουτί για να κρύβει το προηγούμενο κείμενο, αν υπάρχει.
+          fill(0);
       rectMode(CENTER);
-          noStroke();
-      rect(width/2,imgmap.height+100,textWidth('We have the music! Now double click on the cell you are')*2,50);
+      noStroke();
+      rect(width/2,imgmap.height+100,textWidth('We have the photo! Now click on the cell you are')*2,50); 
+      
   textAlign(CENTER,CENTER);
   textSize(25);
   fill('cornflowerblue');
@@ -121,26 +132,27 @@ function handleFile(file) {
     }
 }
 
-
-
-
+//Διαχείριση της καταγραφής του ήχου
 function toggleRecording() {
+  //Αν δε καταγράφεται ο ήχος και πατηθεί το κουμπί αρχίζει η καταγραφή
     if (!isRecording) {
-        // Start recording
         recorder.record(soundrecord);
         isRecording = true;
         button.html('Stop Recording');
       
-    } else {
-        // Stop recording
-        recorder.stop();
-        isRecording = false;
-        recordingFinished = true;
-        button.html('RECORD YOUR EVENT');
+    } 
+  //Αλλιώς σταματά να κάνει καταγραφή 
+  else { recorder.stop();
+         isRecording = false;
+         recordingFinished = true;
+         button.html('RECORD YOUR EVENT');
+      
+       //Όταν καταγράφεται ο ήχος ενημερώνει το χρήστη. Δημιουργείται ένα μαύρο κουτί για να κρύβει το προηγούμενο κείμενο, αν υπάρχει.
       fill(0);
       rectMode(CENTER);
       noStroke();
-      rect(width/2,imgmap.height+100,textWidth('We have the music! Now double click on the cell you are')*2,50); //Προκειμένου να κρύβει το άλλο κείμενο
+      rect(width/2,imgmap.height+100,textWidth('We have the music! Now double click on the cell you are')*2,50); 
+        
       textAlign(CENTER,CENTER);
   textSize(25);
   fill('cornflowerblue');
@@ -150,22 +162,25 @@ function toggleRecording() {
     }
 }
   
-function soundcell(){
-  //Δημιουργούμε 2Darrays για να ορίσουμε κάθε κέλί με άλλες ιδιότητες
+//Δημιουργούμε 2Darrays για να ορίσουμε κάθε κέλί με  ιδιότητες
+function soundphotocell(){
+  
     for (let i = 1; i < cols; i++) {
-        clickCounts[i] = []; 
-        
-        sounds[i] = [];
+        clickCounts[i] = []; //Καταμέτρηση των κλικ
+        sounds[i] = []; 
         images[i] = [];
         for (let j = 1; j < rows; j++) {
-            clickCounts[i][j] = 0; //μετράει πόσα κλικ κάνουμε σε κάθε κελί
+            clickCounts[i][j] = 0; //Μετράει πόσα κλικ κάνουμε σε κάθε κελί. Ξεκινά με 0.
         
+    //Αν υπάρχει καταγραφή ήχου, τότε κάνει assign σε μια μεταβλητή. Στην αρχή το είχαμε κάνει όπως και στις εικόνες με !null, αλλά δε λειτουργούσε.
        if (soundrecord){
               sounds[i][j] = eventsound;
             }
+    // Αν δεν υπάρχει ορίζει τα κελιά με κενό ήχο, ώστε να μη ψάχνει να βρει ήχο.
           else {
-                sounds[i][j] = null; // Οπότε οι υπόλοιποι ήχοι των κελιών είναι κενοί
+                sounds[i][j] = null; 
             }
+  //Αντίστοιχα, για τις εικόνες.
           if (uploadedImage){
             images[i][j]=!null;
           }else{ images[i][j] = null; }// Οπότε οι υπόλοιπες εικόνες των κελιών είναι κενές
@@ -174,49 +189,43 @@ function soundcell(){
     }
 }
 
-//Σε αυτό το function ρυθμίζουμε αν γίνει κλικ μέσα σε ένα κελί να παίζει τον ήχο. Μέχρι στιγμής παίζει μόνο στο κελί 2,2. Επίσης μετράει τα κλικ που γίνονται, ώστε στο πρώτο κλικ να παίζει ο ήχος και στο δεύτερο να σταματάει.
+//Σε αυτό το function ρυθμίζουμε αν γίνει κλικ μέσα σε ένα κελί να αποθηκέυεται με ένα όνομα που αντιστοιχεί στα i και j του κελιού που έγινε κλικ.
 function mouseClicked() {
     let cellWidth = imgmap.width / cols;
     let cellHeight = imgmap.height / rows;
 
     
-
-    /*let i = floor(mouseX / cellWidth);
-    let j = floor(mouseY / cellHeight);*/
-
-    // Check boundaries and mouse position
-    //if (i >= 1 && i < cols && j >= 1 && j < rows && mouseY < imgmap.height) {
    for (let i = 1; i < cols; i++) {
     let x = i * cellWidth;
     
   for (let j = 1; j < rows+1; j++) {
             let y = j * cellHeight;
          
-
+//Ορίζουμε που θα βρίσκεται το ποντίκι μέσα στο κάθε κελί
   if (mouseX>x && mouseX<x+cellWidth && mouseY>y && mouseY<y+cellHeight){
         
 
-        // Perform actions based on click count
+// Αν γίνει το δεύτερο κλικ(0,1) και υπάρχει εικόνα τότε αποθηκεύεται η εικόνα στον υπολογιστή με νέο όνομα.
         if (clickCounts[i][j] === 1 && uploadedImage ) {
            images[i][j] = uploadedImage;
             uploadedImage.save(`myImage${i}${j}`);
-           // Draw visual feedback (rectangle) for the clicked cell
+//Για να καταλάβει ο χρήστης ότι έγινε αποθήκευση αλλάζει το χρώμα του κελιού
         fill(255, 60);
         stroke(255);
         rect(i*cellWidth+cellWidth/2 , j*cellHeight+cellHeight/2 , cellWidth, cellHeight);
         } 
+// Αν γίνει το δεύετρο κλικ και υπάρχει ήχος τότε αποθηκεύεται ο ήχος στον υπολογιστή με νέο όνομα.
     if (clickCounts[i][j] === 1 && soundrecord) {
            sounds[i][j] = soundrecord;
             saveSound(soundrecord, `myRecording${i}${j}.wav`);
-           // Draw visual feedback (rectangle) for the clicked cell
+      
+//Για να καταλάβει ο χρήστης ότι έγινε upload αλλάζει το χρώμα του κελιού
         fill(100,100,250);
         stroke(255);
         rect(i*cellWidth+cellWidth/2 , j*cellHeight+cellHeight/2 , cellWidth, cellHeight);
-        } clickCounts[i][j]++; // Increment click count for this cell
-
-        // Debugging: Log clickCounts for verification
-        console.log(`Click count for cell (${i}, ${j}):`, clickCounts[i][j]);
-
+        } 
+    
+    clickCounts[i][j]++; 
        
     }
 }
