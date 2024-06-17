@@ -197,18 +197,18 @@ function mouseClicked() {
         
 
         // Perform actions based on click count
-        if (clickCounts[i][j] === 0 && imgUploadFinished == true) {
+        if (clickCounts[i][j] === 0 && !soundrecord ) {
            images[i][j] = uploadedImage;
             uploadedImage.save(`myImage${i}${j}`);
            // Draw visual feedback (rectangle) for the clicked cell
         fill(255, 60);
         stroke(255);
         rect(i*cellWidth+cellWidth/2 , j*cellHeight+cellHeight/2 , cellWidth, cellHeight);
-        } else if (clickCounts[i][j] === 1 && soundrecord) {
+        } if (clickCounts[i][j] === 1 && !uploadedImage) {
            sounds[i][j] = soundrecord;
             saveSound(soundrecord, `myRecording${i}${j}.wav`);
            // Draw visual feedback (rectangle) for the clicked cell
-        fill(100,100,50);
+        fill(100,100,250);
         stroke(255);
         rect(i*cellWidth+cellWidth/2 , j*cellHeight+cellHeight/2 , cellWidth, cellHeight);
         } clickCounts[i][j]++; // Increment click count for this cell
