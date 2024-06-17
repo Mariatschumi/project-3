@@ -1,0 +1,214 @@
+/*Αφού έχουμε χρησιμοποιήσει το χάρτη που συλλέγει δεδομένα από το χρήστη, δημιουργούμε ένα χάρτη για την οπτικοποίηση αυτών. Οι αποθηκευμένοι ήχοι στα κελιά και αντίστοιχα οι φωτογραφίες εμφανίζονται στον κάναβο, αλλάζοντας την εικόνα της πόλης μέσα από ηχητικά κύματα και φωτογραφίες.*/
+
+//Ορίζουμε τις μεταβλητές
+
+//Μεταβλητές για τον κάναβο
+let cols = 25;
+let rows = 15;
+let mygrid = [];
+let imgmap;
+
+//Μεταβλητή για κλικ
+let clickCounts = [];
+
+//Μεταβλητές για ήχο
+let soundfiles = [];
+let sounds = [];
+let amplitude;
+let waves = [];
+
+//Μεταβλητές για φωτογραφίες
+let photofiles = [];
+let photos = [];
+let photoPath;
+
+//Ανεβάζουμε την εικόνα του χάρτη κανονικά, τους ήχους και τις φωτογραφίες ως paths. Αυτό γίνεται γιατί όταν βάζαμε όνομα του αρχείου ως ${i}${j}, έκανε Loading συνεχώς και δεν λειτουργούσε.
+function preload() {
+    imgmap = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.jpg');
+    
+    // Πρέπει να αντιστοιχήσουμε κάθε ήχο και φωτογραφία στα κελιά που αντιστοιχούν με βάση το όνομα τους. Οπότε κάνουμε 2D arrays που αντιπροσωπεύουν τα κελιά και έχουν μέσα τους το Path για τον ήχο ή την εικόνα.
+    for (let i = 1; i <= cols; i++) {
+        soundfiles[i] = [];
+      photofiles[i] = [];
+        for (let j = 1; j <= rows; j++) {
+            let soundPath = `https://mariatschumi.github.io/project-3/sounds/myRecording${i}${j}.wav`;
+          soundfiles[i][j] = soundPath;
+          let photoPath = `https://mariatschumi.github.io/project-3/photos/myImage${i}${j}.png`;
+            photofiles[i][j] = photoPath; 
+        }
+    }
+}
+
+//Φτιάχνουμε τον αρχικό κάναβο, όπως στον προηγούμενο χάρτη
+function createGrid() {
+    let cellWidth = imgmap.width / cols;
+    let cellHeight = imgmap.height / rows;
+
+    for (let i = 0; i < cols; i++) {
+        let x = i * cellWidth;
+        for (let j = 0; j < rows; j++) {
+            let y = j * cellHeight;
+            
+            
+            stroke(255);
+            strokeWeight(2);
+            noFill();
+            rect(x + cellWidth, y + cellHeight, cellWidth, cellHeight);
+        }
+    }
+    textAlign(CENTER, CENTER);
+    textSize(15);
+    fill('cornflowerblue');
+    noStroke();
+    for (let i = 1; i <= cols; i++) {
+        let x = i * cellWidth;
+        text(i, x + cellWidth / 2, 25);
+    }
+    for (let j = 1; j <= rows; j++) {
+        let y = j * cellHeight;
+        text(j, 25, y + cellHeight / 2);
+  
+    }
+}
+
+//Ορίζουμε τον καμβά, όπως στον προηγούμενο χάρτη
+function setup() {
+    createCanvas(imgmap.width + width / cols, imgmap.height + 200); 
+   image(imgmap, imgmap.width / cols, imgmap.height / rows);
+  
+    amplitude = new p5.Amplitude(); //Ορίζουμε ως νέα μεταβλητή το εύρος του κύματος
+    createGrid();
+    soundphotocell();
+}
+
+//Στο draw βάζουμε μόνο τα waves και το showphotos για να είναι σε λούπα
+function draw() {
+    drawWaves();
+  showphotos();
+}
+
+//Δημιουργούμε το function που αναθέτει σε κάθε κελί συγκεκριμένο ήχο και φωτογραφία ανάλογα με το Path.
+function soundphotocell() {
+    let cellWidth = imgmap.width / cols;
+    let cellHeight = imgmap.height / rows;
+    
+    for (let i = 1; i <= cols; i++) {
+        mygrid[i] = [];
+        sounds[i] = [];
+        photos[i] = [];
+        clickCounts[i] = [];
+        
+        for (let j = 1; j <= rows; j++) {
+            let soundPath = soundfiles[i][j];
+          //Οι συγκεκριμένες γραμμές του κώδικα έγιναν με βοήθεια του chat.gpt γιατί είχαμε πρόβλημα με το να ανεβάζει το κάθε αρχείο δυναμικά.
+            sounds[i][j] = loadSound(soundPath, () => {
+                console.log(`Sound loaded for cell ${i}, ${j}`);
+            }, () => {
+                console.log(`Error loading sound for cell ${i}, ${j}`);
+            });
+            
+            let photoPath = photofiles[i][j]; // Define photoPath for each cell
+            photos[i][j] = loadImage(photoPath,
+                () => { console.log(`Photo loaded for cell ${i}, ${j}`); },
+                () => { console.log(`Error loading photo for cell ${i}, ${j}`); }
+            );
+            
+            clickCounts[i][j] = 0;
+          //Δημιουργούμε λοιπόν ένα array ως object που αποθηκεύει τις ιδιότητες του: θέση x, θέση y, ληχι και φωτογραφία. Το συγκεκριμένο Object δε βοηθάει πολύ στη συνέχεια του κώδικα, δηλαδή δεν είναι τόσο απαραίτητο αλλά έχει μαζεμένες όλες τις πληροφορίες.
+            mygrid[i][j] = { 
+                positionx: i * cellWidth, 
+                positiony: j * cellHeight, 
+                sound: sounds[i][j], 
+                photo: photos[i][j] 
+            };
+        }
+    }
+}
+
+
+// Αν γίνει κλικ σε κελί που έχει ήχο τότε δημιουργούνται τα κύματα και παίζει ο ήχος. 
+function mouseClicked() {
+    let cellWidth = imgmap.width / cols;
+    let cellHeight = imgmap.height / rows;
+    for (let i = 1; i <= cols; i++) {
+        let x = i * cellWidth;
+        for (let j = 1; j <= rows; j++) {
+            let y = j * cellHeight;
+            if (mouseX > x && mouseX < x + cellWidth && mouseY > y && mouseY < y + cellHeight) {
+                if (clickCounts[i][j] === 0) {
+          //Στο πρώτο κλικ παίζει ο ήχος και ζωγραφίζονται τα κύματα.
+                    if (sounds[i][j] !== null && !sounds[i][j].isPlaying()) {
+                        sounds[i][j].play();
+                      drawWaves();
+                        
+                    }
+                    clickCounts[i][j]++;
+                } else if (clickCounts[i][j] === 1) {
+                    //Στο δεύτερο κλικ σταματάει ο ήχος
+                    if (sounds[i][j] && sounds[i][j].isPlaying()) {
+                        sounds[i][j].stop();
+                    }
+                    clickCounts[i][j] = 0; //Ξαναεπιστρέφει στο 0 ο αριθμός των κλικ
+                }
+            }
+        }
+    }
+}
+
+//Με την περιήγηση του ποντικιού στο χάρτη εμφανίζονται οι φωτογραφίες στα κελιά που υπάρχουν
+function showphotos() {
+    let cellWidth = imgmap.width / cols;
+    let cellHeight = imgmap.height / rows;
+
+    for (let i = 1; i <= cols; i++) {
+        for (let j = 1; j <= rows; j++) {
+            let x = (i - 1) * cellWidth; // Adjust x and y calculation to start from 0
+            let y = (j - 1) * cellHeight;
+
+            if (mouseX > x && mouseX < x + cellWidth && mouseY > y  && photos[i][j]) {
+                let imgX = mygrid[i][j].positionx; // Εδώ για παράδειγμα χρησιμοποιούμε το Object, αλλά θα μπορούσαμε να το ορίσουμε και αλλιώς
+                let imgY = mygrid[i][j].positiony;
+
+                // Βάζουμε στη φωτογραφία να είναι στις διαστάσεις των κελιών. Αυτό τις παραμορφώνει αναγκαστικά λίγο
+                image(photos[i][j], imgX, imgY, cellWidth, cellHeight);
+            }
+        }
+    }
+}
+
+//Δημιουργούμε τα κύματα των ήχων, τα οποία μεταβάλλονται με βάση το εύρος του ήχου.
+function drawWaves() {
+    let cellWidth = imgmap.width / cols;
+    let cellHeight = imgmap.height / rows;
+    for (let i = 1; i <= cols; i++) {
+        for (let j = 1; j <= rows; j++) {
+            if (sounds[i][j] && sounds[i][j].isPlaying()) {
+                let vol = amplitude.getLevel() * 3000; //Για να κάνουμε τα κύμτα βρίσκουμε το εύρος από τον ήχο και το ορίζουμε ως vol. Το πολλαπλασιαζουμε γιατί ήταν πολύ μικρό.
+              
+              //Δημιουργούμε τα κύματα ως objects
+                waves.push({
+                    x: mygrid[i][j].positionx + cellWidth / 2,
+                    y: mygrid[i][j].positiony + cellHeight / 2,
+                    radius: vol,
+                    maxRadius: vol,
+                    speed: 30
+                });
+            }
+        }
+    }
+  //Για κάθε κύμα δημιουργούνται κύκλοι με ακτίνα από τις ιδότητες τους.
+    for (let m = 0; m < waves.length; m++) {
+        let wave = waves[m];
+        noFill();
+        stroke(200, 50, random(255));
+        ellipse(wave.x, wave.y, wave.radius);
+      //Αν η ακτίνα είναι μιρότερη από τη μέγιστη ακτίνα(το Vol) τότε συνεχίζει να μεγαλώνει ο κύκλος. Επομένως κάθε κύμα είναι διαφορετικό γιατί κάθε ήχος έχει διαφορετικό Vol.
+        if (wave.radius < wave.maxRadius) {
+            wave.radius += wave.speed;
+        } //Αν φτάσει ποτέ στη μέγιστη ακτίνα κόβεται το array.
+      else {
+            waves.splice(m, 1); 
+            m--;
+        }
+    }
+}
