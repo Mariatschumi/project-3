@@ -3,7 +3,7 @@
 let cols = 25;
 let rows = 15;
 let mygrid = [];
-let img;
+let imgmap;
 
 //Μεταβλητή για κλικ
 let clickCounts = [];
@@ -17,25 +17,29 @@ var soundrecord;
 var recorder;
 var  button;
 let isRecording = false;
-let recordingDuration = 30000; // 30 seconds
 let eventsound;
 
-//Μεταβλητή για κύμα
-var waves = [];
+//Μεταβλητές για εικόνες
+let images = [];
+let uploadButton;
+let input;
+let uploadedImage;
+let imgUploadFinished = false;
+let uploadPhoto;
+let img;
+let soundImage;
+
+
 
 //Ανεβάζουμε την εικόνα και τον ήχο
 function preload() {
-    img = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.jpg');
-    sound22 = loadSound('https://mariatschumi.github.io/project-3/sounds/sound22.mp3');
-    eventsound = loadSound(`https://mariatschumi.github.io/project-3/sounds/myRecording46.wav`);
-
-
+    imgmap = loadImage('https://mariatschumi.github.io/project-3/photos/map%20athens.jpg');
 }
 
 //Φτιάχνουμε τον αρχικό κάναβο
 function createGrid() {
     let cellWidth = width / cols;
-    let cellHeight = img.height / rows;
+    let cellHeight = imgmap.height / rows;
 
     for (let i = 0; i < cols; i++) {
         let x = i * cellWidth;
@@ -47,7 +51,6 @@ function createGrid() {
             strokeWeight(2);
             noFill();
             rect(x+cellWidth, y+cellHeight, cellWidth, cellHeight);
-          
         }
     }
   textAlign(CENTER,CENTER);
@@ -64,15 +67,11 @@ function createGrid() {
 }
 
 
-
-
 function setup() {
-    createCanvas(img.width+width/cols, img.height+200); //Ορίζουμε την εικόνα ως καμβά
-     image(img, width/cols, img.height/rows);
+    background(0);
+    createCanvas(imgmap.width+width/cols, imgmap.height+200); 
+    image(imgmap, width/cols, imgmap.height/rows);
  
-   
-  
-    
   recorder = new p5.SoundRecorder();
   soundrecord= new p5.SoundFile();
   
@@ -84,15 +83,45 @@ function setup() {
   soundcell();
   
   button = createButton('RECORD YOUR EVENT');
-  button.position(width/cols,img.height+100);
+  button.position(width/cols,imgmap.height+100);
   button.mousePressed(toggleRecording);
+  
+   uploadButton = createButton('UPLOAD YOUR PHOTO');
+    uploadButton.position(width/cols, imgmap.height + 150);
+    uploadButton.mousePressed(openFileDialog);
+
+    input = createFileInput(handleFile);
+    input.position(width/cols, imgmap.height + 130);
+    input.hide(); // Hide it initially
+
 }
 
-function draw() {
-  
-     drawWaves();
-  
+// Function to handle file upload dialog
+function openFileDialog() {
+    input.show();
+    input.elt.click(); // Trigger file input click
+    input.hide(); // Hide it again after clicking
 }
+
+// Function to handle uploaded file
+function handleFile(file) {
+    if (file.type === 'image') {
+        uploadedImage = loadImage(file.data, () => {
+            imgUploadFinished = true;
+             fill(0);
+      rectMode(CENTER);
+      rect(width/2,imgmap.height+100,textWidth('We have the music! Now double click on the cell you are')*2,50);
+  textAlign(CENTER,CENTER);
+  textSize(25);
+  fill('cornflowerblue');
+  noStroke();
+        text('We have the photo! Now click on the cell you are',width/2,imgmap.height+100)
+        });
+    }
+}
+
+
+
 
 function toggleRecording() {
     if (!isRecording) {
@@ -100,51 +129,46 @@ function toggleRecording() {
         recorder.record(soundrecord);
         isRecording = true;
         button.html('Stop Recording');
-
-        // Set a timeout to stop recording after recordingDuration milliseconds
-        setTimeout(() => {
-            if (isRecording) {
-                recorder.stop();
-                isRecording = false;
-                button.html('Start Recording');
-              fill('cornflowerblue');
-        textSize(25);
-        text('click on the cell you are',width/2,img.height+100);
-            }
-        }, recordingDuration);
+      
     } else {
         // Stop recording
         recorder.stop();
         isRecording = false;
-        button.html('Start Recording');
+        recordingFinished = true;
+        button.html('RECORD YOUR EVENT');
+      fill(0);
+      rectMode(CENTER);
+      rect(width/2,imgmap.height+100,textWidth('We have the music! Now double click on the cell you are')*2,50); //Προκειμένου να κρύβει το άλλο κείμενο
+      textAlign(CENTER,CENTER);
+  textSize(25);
+  fill('cornflowerblue');
+  noStroke();
+        text('We have the music! Now double click on the cell you are',width/2,imgmap.height+100)
+      
     }
 }
-
-
-
-
-
+  
 function soundcell(){
   //Δημιουργούμε 2Darrays για να ορίσουμε κάθε κέλί με άλλες ιδιότητες
     for (let i = 1; i < cols; i++) {
         clickCounts[i] = []; 
-        mygrid[i] = []; 
+        
         sounds[i] = [];
+        images[i] = [];
         for (let j = 1; j < rows; j++) {
             clickCounts[i][j] = 0; //μετράει πόσα κλικ κάνουμε σε κάθε κελί
-
-            if (i === 2 && j === 9) {
-                sounds[i][j] = sound22; // Βάζουμε στο κελί2,9 τον ήχο sound29 γιατί αυτόν έχουμε μέχρι στιγμής
-            } 
-          else if (soundrecord){
-              sounds[i][j] = eventsound;
+        
+       if (soundrecord){
+              sounds[i][j] = !null;
             }
           else {
                 sounds[i][j] = null; // Οπότε οι υπόλοιποι ήχοι των κελιών είναι κενοί
             }
-            let cellWidth = img.width/ cols;
-            let cellHeight = img.height / rows;
-            mygrid[i][j] = {positionx: i * cellWidth, positiony: j * cellHeight, sound: sounds[i][j]}; // Ορίζουμε το 2Darray των κελιών ως αντικείμενο με ιδιότητες x,y και ήχου
+          if (uploadedImage){
+            images[i][j]=!null;
+          }else{ images[i][j] = null; }// Οπότε οι υπόλοιπες εικόνες των κελιών είναι κενές
+           
+            
         }
     }
 }
@@ -153,81 +177,37 @@ function soundcell(){
 function mouseClicked() {
   
     let cellWidth = width / cols;
-    let cellHeight = img.height / rows;
+    let cellHeight = imgmap.height / rows;
 
     let i = floor(mouseX / cellWidth);
     let j = floor(mouseY / cellHeight);
 
-    if (i >= 1 && i < cols && j >= 1 && j < rows) {
+    if (i >= 1 && i < cols && j >= 1 && j < rows+1) {
         
         clickCounts[i][j]++; //Αυξάνεται κάθε φορά κατά 1 ο αριθμός των κλικ
+      if (clickCounts[i][j]==2 && soundrecord ){
+        sounds[i][j] = soundrecord;
+            saveSound(soundrecord, `myRecording${i}${j}.wav`);
+     
+            
+      }  else if(clickCounts[i][j]==1 && uploadedImage){
+        images[i][j]= uploadedImage;
+        uploadedImage.save(`myImage${i}${j}`);
+        
+      }
+        else { 
+        textAlign(CENTER,CENTER);
+        textSize(15);
+        fill('cornflowerblue');
+        noStroke();
+        text('Click on the cell you are',width/2,img.height+100)}
+     
       
       //Σε κάθε κλικ αυξάνεται λίγο το opacity του κελιού ώστε στο τέλος να είναι ενας λευκός καμβάς.
             fill(255, 50);
             stroke(255);
-            rect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);}
-  if (clickCounts[i][j] == 1) {
-    
-          saveSound(soundrecord, `myRecording${i}${j}.wav`);
-
-   
-            }
-  
-        if (clickCounts[i][j] == 2 ) {
-          
-           //Στο πρώτο κλικ παίζει ο ήχος
-             
-    
-            if (sounds[i][j]!==null && !sounds[i][j].isPlaying()) {
-                sounds[i][j].play();
-            }
-          
-          //Στο δεύτερο κλικ σταματάει ο ήχος
-        } else if (clickCounts[i][j] == 3) {
-            
-            if (sounds[i][j] && sounds[i][j].isPlaying()) {
-                sounds[i][j].stop(); 
-            } 
-           
-            clickCounts[i][j] = 0; //Ξαναεπιστρέφει στο 0 ο αριθμός των κλικ
-        }      
-        }
-    
+            rect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
 
 
-function drawWaves() {
-    amplitude = new p5.Amplitude(); //Ορίζουμε ως νέα μεταβλητή το εύρος του κύματος
-    let cellWidth = img.width / cols;
-    let cellHeight = img.height / rows;
-
-    for (let i = 1; i < cols; i++) {
-        for (let j = 1; j < rows; j++) {
-            if (sounds[i][j] && sounds[i][j].isPlaying()) {
-                let vol = amplitude.getLevel(sounds[i][j])* 10000; // Adjust the multiplier as needed
-                console.log("Amplitude level:", vol);
-if (clickCounts[i][j]==2 && sounds[i][j] && !soundrecord){
-                waves.push({
-                    x: mygrid[i][j].positionx + cellWidth / 2,
-                    y: mygrid[i][j].positiony + cellHeight / 2,
-                    radius: 0,
-                    maxRadius: cellWidth,
-                    speed: 20
-                });
-            }
-        }
-     }
- }
-
-    for (let m = 0; m < waves.length; m++) {
-        let wave = waves[m];
-        noFill();
-        stroke(200, 50, random(255));
-        ellipse(wave.x, wave.y, wave.radius);
-
-        if (wave.radius < wave.maxRadius) {
-            wave.radius += wave.speed;
-        } else {
-            wave.radius = 0;
-        }
     }
-}
+} 
